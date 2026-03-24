@@ -1,0 +1,329 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quiz - English Verbs Learning{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Progress -->
+            <div class="mb-3">
+                <div class="d-flex justify-content-between">
+                    <span>Question <span id="currentQ">1</span> of {{ num_questions }}</span>
+                    <span>Score: <span id="score">0</span></span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar bg-primary" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Question Card -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <span class="badge bg-white text-primary" id="questionNumber">1</span>
+                    <span class="ms-2">
+                        {% if test_type == 'fill' %}Fill in Past Forms
+                        {% elif test_type == 'choice' %}Multiple Choice
+                        {% else %}Translation{% endif %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <!-- Question Content - Rendered Server Side -->
+                    <div id="questionContent">
+                        {% if questions %}
+                            {% with question=questions.0 %}
+                            <div class="mb-4">
+                                <h4 class="text-primary">
+                                    Base Form: <span class="speakable" data-word="{{ question.base_form }}">{{ question.base_form }}</span>
+                                </h4>
+                                <p class="text-muted">{{ question.pronunciation }}</p>
+                                <p class="text-info"><i class="fas fa-language"></i> {{ question.translation }}</p>
+                            </div>
+                            
+                            {% if test_type == 'fill' %}
+                            <div class="mb-3">
+                                <label class="form-label">Past Simple:</label>
+                                <input type="text" class="form-control form-control-lg" id="pastSimpleInput" 
+                                       placeholder="Enter past simple form">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Past Participle:</label>
+                                <input type="text" class="form-control form-control-lg" id="pastParticipleInput" 
+                                       placeholder="Enter past participle form">
+                            </div>
+                            {% elif test_type == 'choice' %}
+                            <div class="mb-3">
+                                <label class="form-label">Choose the correct Past Simple:</label>
+                                <div id="optionsContainer">
+                                    {% for option in question.options %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="option" 
+                                               id="option{{ forloop.counter0 }}" value="{{ option }}">
+                                        <label class="form-check-label" for="option{{ forloop.counter0 }}">
+                                            <span class="speakable" data-word="{{ option }}">{{ option }}</span>
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% elif test_type == 'translate' %}
+                            <div class="mb-3">
+                                <label class="form-label">Translate to Uzbek:</label>
+                                <input type="text" class="form-control form-control-lg" id="translationInput" 
+                                       placeholder="Enter Uzbek translation">
+                            </div>
+                            {% endif %}
+                            {% endwith %}
+                        {% else %}
+                        <div class="alert alert-warning">No questions available</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Feedback -->
+                    <div class="alert d-none" id="feedbackAlert"></div>
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()">
+                        <i class="fas fa-check"></i> Submit Answer
+                    </button>
+                    <button class="btn btn-success d-none" id="nextBtn" onclick="nextQuestion()">
+                        <i class="fas fa-arrow-right"></i> Next Question
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const questions = {{ questions|safe }};
+    const testType = '{{ test_type }}';
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answeredQuestions = 0;
+
+    function renderQuestion(index) {
+        if (index >= questions.length) {
+            window.location.href = '/quiz/result/';
+            return;
+        }
+        
+        const question = questions[index];
+        
+        document.getElementById('currentQ').textContent = index + 1;
+        document.getElementById('questionNumber').textContent = index + 1;
+        
+        const progressPercent = ((index) / questions.length * 100);
+        document.getElementById('progressBar').style.width = progressPercent + '%';
+        
+        let html = '';
+        
+        if (testType === 'fill') {
+            html = `
+                <div class="mb-4">
+                    <h4 class="text-primary">
+                        Base Form: <span class="speakable" data-word="${question.base_form}">${question.base_form}</span>
+                    </h4>
+                    <p class="text-muted">${question.pronunciation}</p>
+                    <p class="text-info"><i class="fas fa-language"></i> ${question.translation}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Past Simple:</label>
+                    <input type="text" class="form-control form-control-lg" id="pastSimpleInput" 
+                           placeholder="Enter past simple form">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Past Participle:</label>
+                    <input type="text" class="form-control form-control-lg" id="pastParticipleInput" 
+                           placeholder="Enter past participle form">
+                </div>
+            `;
+        } else if (testType === 'choice') {
+            const optionsHtml = question.options.map((opt, i) => `
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="option" 
+                           id="option${i}" value="${opt}">
+                    <label class="form-check-label" for="option${i}">
+                        <span class="speakable" data-word="${opt}">${opt}</span>
+                    </label>
+                </div>
+            `).join('');
+            
+            html = `
+                <div class="mb-4">
+                    <h4 class="text-primary">
+                        Base Form: <span class="speakable" data-word="${question.base_form}">${question.base_form}</span>
+                    </h4>
+                    <p class="text-muted">${question.pronunciation}</p>
+                    <p class="text-info"><i class="fas fa-language"></i> ${question.translation}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Choose the correct Past Simple:</label>
+                    <div id="optionsContainer">${optionsHtml}</div>
+                </div>
+            `;
+        } else if (testType === 'translate') {
+            html = `
+                <div class="mb-4">
+                    <h4 class="text-primary">
+                        Base Form: <span class="speakable" data-word="${question.base_form}">${question.base_form}</span>
+                    </h4>
+                    <p class="text-muted">Past Simple: ${question.past_simple}</p>
+                    <p class="text-muted">Past Participle: ${question.past_participle}</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Translate to Uzbek:</label>
+                    <input type="text" class="form-control form-control-lg" id="translationInput" 
+                           placeholder="Enter Uzbek translation">
+                </div>
+            `;
+        }
+        
+        document.getElementById('questionContent').innerHTML = html;
+        
+        // Reset buttons
+        document.getElementById('submitBtn').style.display = 'inline-block';
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('nextBtn').classList.add('d-none');
+        document.getElementById('feedbackAlert').classList.add('d-none');
+        
+        // Setup input listeners
+        setupInputListeners();
+        
+        // Initialize speakable elements
+        initSpeakableElements();
+    }
+
+    function setupInputListeners() {
+        const submitBtn = document.getElementById('submitBtn');
+        
+        if (testType === 'fill') {
+            const pastInput = document.getElementById('pastSimpleInput');
+            const participleInput = document.getElementById('pastParticipleInput');
+            
+            if (pastInput && participleInput) {
+                const checkInputs = () => {
+                    submitBtn.disabled = !(pastInput.value.trim() && participleInput.value.trim());
+                };
+                pastInput.addEventListener('input', checkInputs);
+                participleInput.addEventListener('input', checkInputs);
+                pastInput.focus();
+            }
+        } else if (testType === 'choice') {
+            const radios = document.querySelectorAll('input[name="option"]');
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    submitBtn.disabled = false;
+                });
+            });
+        } else if (testType === 'translate') {
+            const input = document.getElementById('translationInput');
+            if (input) {
+                input.addEventListener('input', () => {
+                    submitBtn.disabled = !input.value.trim();
+                });
+                input.focus();
+            }
+        }
+    }
+
+    async function submitAnswer() {
+        let userAnswer = '';
+        const question = questions[currentQuestionIndex];
+        
+        if (testType === 'fill') {
+            const past = document.getElementById('pastSimpleInput').value.trim();
+            const participle = document.getElementById('pastParticipleInput').value.trim();
+            userAnswer = past + '/' + participle;
+        } else if (testType === 'choice') {
+            const selected = document.querySelector('input[name="option"]:checked');
+            userAnswer = selected ? selected.value.trim().toLowerCase() : '';
+        } else if (testType === 'translate') {
+            userAnswer = document.getElementById('translationInput').value.trim().toLowerCase();
+        }
+        
+        if (!userAnswer) return;
+        
+        try {
+            const response = await fetch('/quiz/submit/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    question_id: question.id,
+                    answer: userAnswer
+                })
+            });
+            
+            const data = await response.json();
+            
+            const feedback = document.getElementById('feedbackAlert');
+            feedback.classList.remove('d-none');
+            
+            if (data.correct) {
+                score++;
+                feedback.className = 'alert alert-success';
+                feedback.innerHTML = '<i class="fas fa-check-circle"></i> Correct!';
+            } else {
+                feedback.className = 'alert alert-danger';
+                feedback.innerHTML = '<i class="fas fa-times-circle"></i> Incorrect. Answer: ' + data.correct_answer;
+            }
+            
+            document.getElementById('score').textContent = score;
+            answeredQuestions++;
+            
+            const progressPercent = (answeredQuestions / questions.length * 100);
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+            
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nextBtn').classList.remove('d-none');
+            
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        renderQuestion(currentQuestionIndex);
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const submitBtn = document.getElementById('submitBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (!submitBtn.disabled && !submitBtn.classList.contains('d-none')) {
+                submitAnswer();
+            } else if (!nextBtn.classList.contains('d-none')) {
+                nextQuestion();
+            }
+        }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        renderQuestion(0);
+    });
+</script>
+{% endblock %}

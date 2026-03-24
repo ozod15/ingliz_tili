@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quiz Results - English Verbs Learning{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Result Card -->
+            <div class="card text-center shadow">
+                <div class="card-header bg-{% if percentage >= 70 %}success{% elif percentage >= 50 %}warning{% else %}danger{% endif %} text-white">
+                    <h3 class="mb-0">Quiz Complete!</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Score Display -->
+                    <div class="display-1 fw-bold text-{% if percentage >= 70 %}success{% elif percentage >= 50 %}warning{% else %}danger{% endif %}">
+                        {{ score }}/{{ total }}
+                    </div>
+                    <h4 class="text-muted">{{ percentage }}% Correct</h4>
+                    
+                    <!-- XP Earned -->
+                    <div class="alert alert-warning mt-3">
+                        <h4><i class="fas fa-star text-warning"></i> +{{ xp_earned }} XP</h4>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="mt-4">
+                        <a href="{% url 'simple_quiz' %}" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-redo"></i> Try Again
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results List -->
+            {% if results %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Answers</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Verb</th>
+                                    <th>Your Answer</th>
+                                    <th>Correct</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                <tr class="{% if result.is_correct %}table-success{% else %}table-danger{% endif %}">
+                                    <td><strong>{{ result.base_form }}</strong></td>
+                                    <td>{{ result.user_answer }}</td>
+                                    <td>
+                                        {% if result.is_correct %}
+                                        <i class="fas fa-check text-success"></i>
+                                        {% else %}
+                                        <i class="fas fa-times text-danger"></i> {{ result.correct_answer }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

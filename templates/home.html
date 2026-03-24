@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}English Verbs Learning{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    {% if not user.is_authenticated %}
+    <div class="text-center mb-5">
+        <h1 class="display-4 mb-3">🎓 Learn English Irregular Verbs</h1>
+        <p class="lead">Master verbs with interactive quizzes, earn XP and level up!</p>
+        <div class="mt-4">
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-2">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg">Register</a>
+        </div>
+    </div>
+    {% else %}
+    <!-- Game-like Header -->
+    <div class="card bg-gradient text-white mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-2">Welcome back, {{ user.username }}! 🎮</h2>
+                    <p class="mb-0">Keep learning to level up!</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="bg-white rounded p-3 text-dark">
+                        <h1 class="mb-0">⭐ Level {{ profile.level }}</h1>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-warning" style="width: {{ xp_progress }}%"></div>
+                        </div>
+                        <small>{{ profile.xp }} / {{ profile.level|add:1 }}00 XP</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <a href="{% url 'quiz' %}" class="text-decoration-none">
+                <div class="card h-100 text-center border-primary">
+                    <div class="card-body">
+                        <i class="fas fa-play fa-3x text-primary mb-3"></i>
+                        <h5>Start Quiz</h5>
+                        <p class="text-muted mb-0">Practice verbs</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'verbs_list' %}" class="text-decoration-none">
+                <div class="card h-100 text-center border-success">
+                    <div class="card-body">
+                        <i class="fas fa-book fa-3x text-success mb-3"></i>
+                        <h5>All Verbs</h5>
+                        <p class="text-muted mb-0">Browse list</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'leaderboard' %}" class="text-decoration-none">
+                <div class="card h-100 text-center border-warning">
+                    <div class="card-body">
+                        <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+                        <h5>Leaderboard</h5>
+                        <p class="text-muted mb-0">Rankings</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'profile' %}" class="text-decoration-none">
+                <div class="card h-100 text-center border-info">
+                    <div class="card-body">
+                        <i class="fas fa-user fa-3x text-info mb-3"></i>
+                        <h5>Profile</h5>
+                        <p class="text-muted mb-0">Your stats</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Stats -->
+    <div class="row g-4">
+        <div class="col-6 col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h2 class="text-primary">{{ profile.xp }}</h2>
+                    <p class="mb-0 text-muted">Total XP</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h2 class="text-success">{{ profile.total_tests }}</h2>
+                    <p class="mb-0 text-muted">Questions</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h2 class="text-info">{{ profile.correct_answers }}</h2>
+                    <p class="mb-0 text-muted">Correct</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h2 class="text-warning">{{ profile.accuracy }}%</h2>
+                    <p class="mb-0 text-muted">Accuracy</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

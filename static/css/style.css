@@ -1,0 +1,873 @@
+/* English Verbs Learning App - Custom Styles */
+
+/* ============================================
+   CSS Variables
+   ============================================ */
+:root {
+    --primary-color: #4a90d9;
+    --primary-dark: #3a7bc8;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    --transition: all 0.3s ease;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--gradient-bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+/* ============================================
+   Speakable Words (Click to Speak)
+   ============================================ */
+.speakable {
+    cursor: pointer !important;
+    transition: var(--transition);
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+
+.speakable:hover {
+    background: rgba(74, 144, 217, 0.15);
+    color: var(--primary-color);
+    transform: scale(1.02);
+}
+
+.speakable:active {
+    transform: scale(0.98);
+}
+
+/* Icon for speakable */
+.speakable::after {
+    content: '\f028';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    margin-left: 6px;
+    font-size: 0.75em;
+    opacity: 0.5;
+}
+
+.speakable:hover::after {
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+/* ============================================
+   Navigation
+   ============================================ */
+.navbar {
+    background: var(--gradient-primary) !important;
+    box-shadow: var(--shadow-md);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: var(--transition);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+.hero-section {
+    padding: 2rem 0;
+}
+
+.min-vh-75 {
+    min-height: 75vh;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--dark-color);
+}
+
+.hero-content .lead {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.hero-buttons .btn {
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: var(--transition);
+}
+
+.hero-buttons .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Feature Cards */
+.hero-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.feature-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+}
+
+.feature-card:hover {
+    transform: translateX(-10px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.card-icon i {
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+    color: var(--secondary-color);
+    margin-bottom: 0;
+}
+
+/* Stats Container */
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    min-width: 150px;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.stat-icon i {
+    color: #fff;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    color: var(--secondary-color);
+    font-size: 0.875rem;
+}
+
+/* Recent Tests */
+.recent-tests-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+}
+
+/* ============================================
+   Authentication Pages
+   ============================================ */
+.auth-container {
+    padding: 3rem 0;
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+}
+
+.auth-card {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.auth-header h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: var(--secondary-color);
+    margin-bottom: 0;
+}
+
+.auth-form .form-control {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+}
+
+.auth-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 217, 0.25);
+}
+
+.auth-form .btn {
+    border-radius: 0.5rem;
+    font-weight: 600;
+}
+
+.auth-footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--light-color);
+}
+
+.auth-link {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+.demo-accounts {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--light-color);
+}
+
+/* ============================================
+   Quiz Page
+   ============================================ */
+.quiz-container {
+    padding: 2rem 0;
+}
+
+.quiz-header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.quiz-type-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.quiz-type-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-color);
+}
+
+.quiz-card-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.quiz-card-icon i {
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.quiz-type-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.quiz-type-card p {
+    color: var(--secondary-color);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+/* Quick Start */
+.quick-start-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+.quick-start-card h4 {
+    margin-bottom: 0.5rem;
+}
+
+.quick-start-card .btn {
+    border-radius: 50px;
+}
+
+/* ============================================
+   Quiz Play Page
+   ============================================ */
+.quiz-play-container {
+    padding: 2rem 0;
+}
+
+.quiz-progress {
+    background: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.question-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    margin-top: 1rem;
+}
+
+.question-header {
+    margin-bottom: 1.5rem;
+}
+
+.question-content {
+    min-height: 200px;
+}
+
+.verb-question {
+    padding: 1rem 0;
+}
+
+.verb-base {
+    background: var(--light-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.verb-base .label {
+    color: var(--secondary-color);
+    font-size: 0.875rem;
+}
+
+.verb-base .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0 0.5rem;
+}
+
+.verb-base .pronunciation {
+    color: var(--secondary-color);
+    font-size: 0.875rem;
+}
+
+.verb-translation {
+    font-size: 1.125rem;
+}
+
+.verb-forms {
+    background: var(--light-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.option-item {
+    padding: 1rem;
+    border: 2px solid var(--light-color);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.option-item:hover {
+    border-color: var(--primary-color);
+    background: rgba(74, 144, 217, 0.05);
+}
+
+.option-item input:checked + label {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Quiz Buttons */
+.question-actions .btn {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.question-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.question-actions .btn:disabled {
+    opacity: 0.6;
+    transform: none;
+}
+
+/* ============================================
+   Results Page
+   ============================================ */
+.result-container {
+    padding: 2rem 0;
+}
+
+.result-summary-card {
+    background: #fff;
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.result-icon i {
+    font-size: 4rem;
+}
+
+.result-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.score-circle {
+    width: 150px;
+    height: 150px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.score-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.result-details {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 2rem 0;
+}
+
+.detail-item {
+    text-align: center;
+}
+
+.detail-item .detail-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+.detail-item .detail-label {
+    color: var(--secondary-color);
+    font-size: 0.875rem;
+}
+
+.result-actions .btn {
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.result-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.result-item {
+    transition: var(--transition);
+}
+
+.result-item:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.verb-title {
+    margin-bottom: 1rem;
+}
+
+.verb-details .detail-row {
+    margin-bottom: 0.25rem;
+}
+
+.verb-details .label {
+    color: var(--secondary-color);
+    font-size: 0.875rem;
+}
+
+.verb-details .value {
+    font-weight: 500;
+}
+
+.result-badge {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   Profile Page
+   ============================================ */
+.profile-container {
+    padding: 2rem 0;
+}
+
+.profile-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.profile-avatar i {
+    font-size: 3rem;
+    color: #fff;
+}
+
+.profile-card h2 {
+    margin-bottom: 0.5rem;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 2rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid var(--light-color);
+    border-bottom: 1px solid var(--light-color);
+}
+
+.profile-stats .stat-item {
+    text-align: center;
+}
+
+.profile-stats .stat-item i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.profile-stats .stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+.profile-stats .stat-label {
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+}
+
+.profile-actions .btn {
+    border-radius: 0.5rem;
+}
+
+/* History Card */
+.history-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+}
+
+.history-card h3 {
+    margin-bottom: 1rem;
+}
+
+.empty-state {
+    padding: 3rem;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: var(--secondary-color);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+/* Quick Stats */
+.quick-stats-card {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+}
+
+.quick-stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--light-color);
+    border-radius: 0.5rem;
+}
+
+.quick-stat-item i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.quick-stat-item .qs-value {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+}
+
+.quick-stat-item .qs-label {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark-color);
+}
+
+/* ============================================
+   Verbs List Page
+   ============================================ */
+.verbs-list-container {
+    padding: 2rem 0;
+}
+
+.verbs-header h1 {
+    margin-bottom: 0.5rem;
+}
+
+.verbs-controls .form-control,
+.verbs-controls .form-select {
+    border-radius: 0.5rem;
+}
+
+.verbs-table-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.verbs-table-card thead {
+    background: var(--gradient-primary);
+    color: #fff;
+}
+
+.verbs-table-card th,
+.verbs-table-card td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.verbs-table-card tbody tr:hover {
+    background: rgba(74, 144, 217, 0.05);
+}
+
+.verbs-count {
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+.footer {
+    background: var(--dark-color);
+    color: #fff;
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+.footer p {
+    margin-bottom: 0.25rem;
+}
+
+.footer small {
+    opacity: 0.7;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+@media (max-width: 991px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-content .lead {
+        font-size: 1rem;
+    }
+    
+    .stats-container {
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        min-width: 120px;
+        padding: 1rem;
+    }
+    
+    .result-details {
+        gap: 1.5rem;
+    }
+    
+    .profile-stats {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+    
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+    }
+    
+    .feature-card {
+        padding: 1rem;
+    }
+    
+    .quiz-type-card {
+        padding: 1.5rem;
+    }
+    
+    .question-card {
+        padding: 1.5rem;
+    }
+    
+    .result-summary-card {
+        padding: 2rem 1rem;
+    }
+    
+    .score-circle {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .score-value {
+        font-size: 2.5rem;
+    }
+    
+    .result-details {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .detail-item {
+        flex: 1 1 30%;
+    }
+    
+    .detail-item .detail-value {
+        font-size: 1.5rem;
+    }
+}

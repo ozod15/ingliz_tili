@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quiz - English Verbs Learning{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Progress -->
+            <div class="mb-3">
+                <div class="d-flex justify-content-between">
+                    <span>Question {{ question_num }} of {{ total_questions }}</span>
+                    <span>Score: {{ score }}</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-success" style="width: {{ progress }}%"></div>
+                </div>
+            </div>
+            
+            <!-- Question Card -->
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        Fill in the Past Simple form
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Verb Display -->
+                    <div class="text-center mb-4">
+                        <h3 class="text-primary">
+                            Base Form: <strong>{{ verb.base_form }}</strong>
+                        </h3>
+                        <p class="text-muted">{{ verb.pronunciation }}</p>
+                    </div>
+                    
+                    <!-- Answer Form -->
+                    <form method="POST" action="{% url 'simple_quiz' %}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fs-5">What is the Past Simple form?</label>
+                            <input type="text" name="answer" class="form-control form-control-lg" 
+                                   placeholder="Enter past simple form" required autofocus>
+                        </div>
+                        
+                        <!-- Feedback (after answer) -->
+                        {% if feedback %}
+                        <div class="alert alert-{{ feedback.type }} mt-3">
+                            <h5>{{ feedback.message }}</h5>
+                            {% if show_answer and not is_correct %}
+                            <p class="mb-0 mt-2">
+                                <strong>Correct answer:</strong> {{ verb.past_simple }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            {% if show_answer %}
+                            <button type="submit" name="next" class="btn btn-success btn-lg flex-grow-1">
+                                <i class="fas fa-arrow-right"></i> Next Question
+                            </button>
+                            {% else %}
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                                <i class="fas fa-check"></i> Submit Answer
+                            </button>
+                            {% endif %}
+                            <a href="{% url 'quiz' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times"></i> Quit
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Hint -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    Tip: Think about how "{{ verb.base_form }}" is conjugated in past tense!
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

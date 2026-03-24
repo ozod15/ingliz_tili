@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Results - English Verbs Learning{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Results Summary Card -->
+                <div class="result-summary-card text-center mb-5">
+                    <div class="result-icon mb-4">
+                        {% if percentage >= 80 %}
+                            <i class="fas fa-trophy text-warning"></i>
+                        {% elif percentage >= 60 %}
+                            <i class="fas fa-star text-success"></i>
+                        {% elif percentage >= 40 %}
+                            <i class="fas fa-thumbs-up text-primary"></i>
+                        {% else %}
+                            <i class="fas fa-heart text-danger"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <h1 class="result-title">
+                        {% if percentage >= 80 %}
+                            Excellent!
+                        {% elif percentage >= 60 %}
+                            Great Job!
+                        {% elif percentage >= 40 %}
+                            Good Effort!
+                        {% else %}
+                            Keep Practicing!
+                        {% endif %}
+                    </h1>
+                    
+                    <div class="result-score">
+                        <div class="score-circle mx-auto mb-4">
+                            <span class="score-value">{{ percentage }}%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <span class="detail-value">{{ score }}</span>
+                            <span class="detail-label">Correct</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-value">{{ total|add:'-'|add:score }}</span>
+                            <span class="detail-label">Incorrect</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-value">{{ total }}</span>
+                            <span class="detail-label">Total</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-actions mt-4">
+                        <a href="{% url 'quiz' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-redo me-2"></i>Try Again
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Detailed Results -->
+                <div class="detailed-results">
+                    <h3 class="mb-4">
+                        <i class="fas fa-list-alt me-2"></i>Detailed Results
+                    </h3>
+                    
+                    {% for result in results %}
+                    <div class="result-item card mb-3 {% if result.is_correct %}border-success{% else %}border-danger{% endif %}">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h5 class="verb-title">
+                                        <span class="badge bg-secondary me-2">{{ forloop.counter }}</span>
+                                        <span class="speakable" data-word="{{ result.question.base_form }}">{{ result.question.base_form }}</span>
+                                        <small class="text-muted ms-2">{{ result.question.pronunciation }}</small>
+                                    </h5>
+                                    <div class="verb-details">
+                                        <div class="detail-row">
+                                            <span class="label">Past Simple:</span>
+                                            <span class="value speakable" data-word="{{ result.question.past_simple }}">{{ result.question.past_simple }}</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="label">Past Participle:</span>
+                                            <span class="value speakable" data-word="{{ result.question.past_participle }}">{{ result.question.past_participle }}</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="label">Translation:</span>
+                                            <span class="value">{{ result.question.translation }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    {% if result.is_correct %}
+                                        <span class="badge bg-success result-badge">
+                                            <i class="fas fa-check me-1"></i>Correct
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger result-badge">
+                                            <i class="fas fa-times me-1"></i>Incorrect
+                                        </span>
+                                        <div class="your-answer mt-2">
+                                            <small class="text-muted">Your answer:</small>
+                                            <div class="{% if result.is_correct %}text-success{% else %}text-danger{% endif %}">
+                                                {{ result.user_answer }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize speakable elements for pronunciation
+    if (typeof initSpeakableElements === 'function') {
+        initSpeakableElements();
+    }
+});
+</script>
+{% endblock %}

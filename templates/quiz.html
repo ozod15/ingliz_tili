@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quiz{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-4">Choose Quiz Type</h1>
+    
+    <!-- Smart Quiz - Recommended -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+            <div class="card border-info text-center h-100">
+                <div class="card-body bg-info text-white rounded">
+                    <i class="fas fa-brain fa-3x mb-3"></i>
+                    <h4>🧠 Smart Quiz</h4>
+                    <p class="mb-3">Adaptive learning - focuses on your weak words!</p>
+                    <a href="{% url 'smart_quiz' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-rocket"></i> Start Learning
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-bolt fa-3x text-warning mb-3"></i>
+                    <h5>Quick Quiz</h5>
+                    <p class="text-muted">Simple & fast</p>
+                    <a href="{% url 'simple_quiz' %}" class="btn btn-warning">Start</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-pen-alt fa-3x text-primary mb-3"></i>
+                    <h5>Fill in Past Forms</h5>
+                    <p class="text-muted">Write past simple & participle</p>
+                    <a href="{% url 'start_quiz' %}?type=fill&num=10" class="btn btn-primary">Start</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-list-ul fa-3x text-success mb-3"></i>
+                    <h5>Multiple Choice</h5>
+                    <p class="text-muted">Choose correct answer</p>
+                    <a href="{% url 'start_quiz' %}?type=choice&num=10" class="btn btn-success">Start</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-exchange-alt fa-3x text-info mb-3"></i>
+                    <h5>Translation</h5>
+                    <p class="text-muted">Translate to Uzbek</p>
+                    <a href="{% url 'start_quiz' %}?type=translate&num=10" class="btn btn-info">Start</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

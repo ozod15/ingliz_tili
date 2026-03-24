@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Leaderboard - English Verbs Learning{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h1 class="display-5 fw-bold">
+            <i class="fas fa-trophy text-warning me-2"></i>Leaderboard
+        </h1>
+        <p class="text-muted">Top learners ranked by XP</p>
+    </div>
+
+    <!-- Top 3 Podium -->
+    {% if leaderboard|length >= 3 %}
+    <div class="row justify-content-center mb-5">
+        {% with leaderboard.1 as second %}
+        {% with leaderboard.0 as first %}
+        {% with leaderboard.2 as third %}
+        
+        <!-- 2nd Place -->
+        <div class="col-4 text-center">
+            <div class="card border-secondary mb-3">
+                <div class="card-body py-3">
+                    <div class="avatar-lg mb-2">🥈</div>
+                    <h5 class="mb-1">{{ second.username }}</h5>
+                    <div class="text-warning fw-bold">Level {{ second.level }}</div>
+                    <div class="text-muted small">{{ second.xp }} XP</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 1st Place -->
+        <div class="col-4 text-center">
+            <div class="card border-warning mb-3" style="background: linear-gradient(135deg, #fff3cd 0%, #ffc107 100%);">
+                <div class="card-body py-3">
+                    <div class="avatar-lg mb-2">🥇</div>
+                    <h5 class="mb-1 fw-bold">{{ first.username }}</h5>
+                    <div class="text-warning fw-bold">Level {{ first.level }}</div>
+                    <div class="text-muted small">{{ first.xp }} XP</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3rd Place -->
+        <div class="col-4 text-center">
+            <div class="card border-danger mb-3">
+                <div class="card-body py-3">
+                    <div class="avatar-lg mb-2">🥉</div>
+                    <h5 class="mb-1">{{ third.username }}</h5>
+                    <div class="text-warning fw-bold">Level {{ third.level }}</div>
+                    <div class="text-muted small">{{ third.xp }} XP</div>
+                </div>
+            </div>
+        </div>
+        
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+    </div>
+    {% endif %}
+
+    <!-- Full Rankings Table -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fas fa-list me-2"></i>All Rankings</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Rank</th>
+                            <th>Player</th>
+                            <th>Level</th>
+                            <th>XP</th>
+                            <th>Correct</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in leaderboard %}
+                        <tr class="{% if entry.rank <= 3 %}table-warning{% endif %}">
+                            <td class="ps-4">
+                                {% if entry.rank == 1 %}
+                                <span class="badge bg-warning text-dark">🥇</span>
+                                {% elif entry.rank == 2 %}
+                                <span class="badge bg-secondary">🥈</span>
+                                {% elif entry.rank == 3 %}
+                                <span class="badge bg-danger">🥉</span>
+                                {% else %}
+                                <span class="text-muted">#{{ entry.rank }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <span class="avatar-sm me-2">
+                                        {% if entry.avatar == 'avatar1' %}👨‍🎓
+                                        {% elif entry.avatar == 'avatar2' %}👩‍🏫
+                                        {% elif entry.avatar == 'avatar3' %}🚀
+                                        {% elif entry.avatar == 'avatar4' %}⭐
+                                        {% elif entry.avatar == 'avatar5' %}🔥
+                                        {% elif entry.avatar == 'avatar6' %}💎
+                                        {% elif entry.avatar == 'avatar7' %}🏆
+                                        {% else %}🌟{% endif %}
+                                    </span>
+                                    <strong>{{ entry.username }}</strong>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-primary">{{ entry.level }}</span></td>
+                            <td class="text-warning fw-bold">{{ entry.xp }}</td>
+                            <td>{{ entry.correct_answers }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                <i class="fas fa-users fa-2x mb-2"></i>
+                                <p class="mb-0">No players yet. Start learning to be the first!</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Rank (if logged in) -->
+    {% if user_rank %}
+    <div class="card mt-4 border-primary">
+        <div class="card-body text-center py-3">
+            <h5 class="mb-2">Your Ranking</h5>
+            <div class="display-4 text-primary fw-bold">#{{ user_rank }}</div>
+            <p class="text-muted mb-0">Keep learning to climb the leaderboard!</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Start Learning CTA -->
+    {% if not user.is_authenticated %}
+    <div class="text-center mt-4">
+        <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-rocket me-2"></i>Join Now & Start Learning
+        </a>
+    </div>
+    {% else %}
+    <div class="text-center mt-4">
+        <a href="{% url 'quiz' %}" class="btn btn-success btn-lg">
+            <i class="fas fa-play me-2"></i>Start Quiz to Earn XP
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.avatar-lg {
+    font-size: 2.5rem;
+}
+.avatar-sm {
+    font-size: 1.5rem;
+}
+</style>
+{% endblock %}

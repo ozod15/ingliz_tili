@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Verbs - English Verbs Learning{% endblock %}
+
+{% block content %}
+<div class="verbs-list-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="verbs-header text-center mb-5">
+                    <h1><i class="fas fa-book text-primary me-3"></i>English Irregular Verbs</h1>
+                    <p class="lead text-muted">Complete list of irregular verbs with translations</p>
+                    <p class="text-info"><small><i class="fas fa-volume-up me-1"></i>Click on any word to hear pronunciation</small></p>
+                </div>
+                
+                <!-- Search and Filter -->
+                <div class="verbs-controls mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="searchInput" 
+                                       placeholder="Search verbs...">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select" id="sortSelect">
+                                <option value="base_form">Sort by Base Form (A-Z)</option>
+                                <option value="base_form_desc">Sort by Base Form (Z-A)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Verbs Table -->
+                <div class="verbs-table-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="verbsTable">
+                            <thead>
+                                <tr>
+                                    <th>Base Form</th>
+                                    <th>Past Simple</th>
+                                    <th>Past Participle</th>
+                                    <th>Pronunciation</th>
+                                    <th>Uzbek Translation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="verbsTableBody">
+                                {% for verb in verbs %}
+                                <tr>
+                                    <td>
+                                        <strong class="speakable" data-word="{{ verb.base_form }}">{{ verb.base_form }}</strong>
+                                    </td>
+                                    <td><span class="speakable" data-word="{{ verb.past_simple }}">{{ verb.past_simple }}</span></td>
+                                    <td><span class="speakable" data-word="{{ verb.past_participle }}">{{ verb.past_participle }}</span></td>
+                                    <td>
+                                        <small class="text-muted">
+                                            <i class="fas fa-volume-up me-1"></i>{{ verb.pronunciation }}
+                                        </small>
+                                    </td>
+                                    <td>{{ verb.translation }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {% if not verbs %}
+                    <div class="empty-state text-center py-5">
+                        <i class="fas fa-book-open empty-icon"></i>
+                        <h4>No verbs found</h4>
+                        <p class="text-muted">Verbs data not loaded. Run the load_verbs command.</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="verbs-count text-center mt-3">
+                    <p class="text-muted">
+                        <i class="fas fa-list-ol me-2"></i>
+                        Total: <strong>{{ verbs|length }}</strong> irregular verbs
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize speakable elements for pronunciation
+    if (typeof initSpeakableElements === 'function') {
+        initSpeakableElements();
+    }
+    
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const tableBody = document.getElementById('verbsTableBody');
+    const rows = tableBody.querySelectorAll('tr');
+    
+    function filterAndSort() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const sortValue = sortSelect.value;
+        
+        let filteredRows = Array.from(rows).filter(row => {
+            const text = row.textContent.toLowerCase();
+            return text.includes(searchTerm);
+        });
+        
+        // Sort
+        filteredRows.sort((a, b) => {
+            const aText = a.cells[0].textContent.toLowerCase();
+            const bText = b.cells[0].textContent.toLowerCase();
+            if (sortValue === 'base_form') {
+                return aText.localeCompare(bText);
+            } else {
+                return bText.localeCompare(aText);
+            }
+        });
+        
+        // Reappend
+        tableBody.innerHTML = '';
+        filteredRows.forEach(row => tableBody.appendChild(row));
+        
+        // Reinitialize speakable after sorting
+        setTimeout(function() {
+            if (typeof initSpeakableElements === 'function') {
+                initSpeakableElements();
+            }
+        }, 100);
+    }
+    
+    searchInput.addEventListener('input', filterAndSort);
+    sortSelect.addEventListener('change', filterAndSort);
+});
+</script>
+{% endblock %}

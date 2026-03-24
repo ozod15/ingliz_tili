@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - English Verbs Learning{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Profile Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card text-center shadow">
+                <div class="card-body">
+                    <!-- Avatar -->
+                    <div class="avatar-display mb-3">
+                        <span style="font-size: 80px;">{{ avatar_emoji.avatar1 }}</span>
+                    </div>
+                    <h3>{{ user.username }}</h3>
+                    <p class="text-muted">Level {{ profile.level }}</p>
+                    
+                    <!-- XP Bar -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between small">
+                            <span>XP: {{ profile.xp }}</span>
+                            <span>{{ profile.level|add:1 }}00 XP</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-warning" style="width: {{ xp_progress }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="row text-center mt-3">
+                        <div class="col-4">
+                            <strong>{{ profile.total_tests }}</strong>
+                            <small class="d-block text-muted">Questions</small>
+                        </div>
+                        <div class="col-4">
+                            <strong>{{ profile.correct_answers }}</strong>
+                            <small class="d-block text-muted">Correct</small>
+                        </div>
+                        <div class="col-4">
+                            <strong>{{ profile.accuracy }}%</strong>
+                            <small class="d-block text-muted">Accuracy</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings -->
+        <div class="col-md-8">
+            <!-- Change Avatar -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-user"></i> Choose Avatar</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        {% for av_id, av_emoji in avatar_emoji.items %}
+                        <div class="col-3 mb-3">
+                            <button class="btn btn-outline-primary p-3" onclick="changeAvatar('{{ av_id }}')">
+                                <span style="font-size: 30px;">{{ av_emoji }}</span>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Change Username -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-edit"></i> Change Username</h5>
+                </div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input type="text" id="newUsername" class="form-control" placeholder="New username">
+                        <button class="btn btn-success" onclick="changeUsername()">Update</button>
+                    </div>
+                    <small class="text-muted" id="usernameMsg"></small>
+                </div>
+            </div>
+            
+            <!-- Change Password -->
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-lock"></i> Change Password</h5>
+                </div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input type="password" id="newPassword" class="form-control" placeholder="New password">
+                        <button class="btn btn-warning" onclick="changePassword()">Update</button>
+                    </div>
+                    <small class="text-muted" id="passwordMsg"></small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test History -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">Recent Tests</h5>
+        </div>
+        <div class="card-body">
+            {% if test_results %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Score</th>
+                            <th>XP Earned</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for test in test_results %}
+                        <tr>
+                            <td>{{ test.get_test_type_display }}</td>
+                            <td>{{ test.score }}/{{ test.total_questions }}</td>
+                            <td><span class="badge bg-warning">+{{ test.xp_earned }} XP</span></td>
+                            <td>{{ test.completed_at|date:"M d, H:i" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-center text-muted">No tests yet. Start a quiz!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function changeUsername() {
+    const username = document.getElementById('newUsername').value;
+    if (!username) return;
+    
+    fetch('/profile/change-username/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ username: username })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const msg = document.getElementById('usernameMsg');
+        if (data.success) {
+            msg.className = 'text-success';
+            msg.textContent = data.message;
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            msg.className = 'text-danger';
+            msg.textContent = data.message;
+        }
+    });
+}
+
+function changePassword() {
+    const password = document.getElementById('newPassword').value;
+    if (!password) return;
+    
+    fetch('/profile/change-password/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ password: password })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const msg = document.getElementById('passwordMsg');
+        if (data.success) {
+            msg.className = 'text-success';
+            msg.textContent = data.message;
+            document.getElementById('newPassword').value = '';
+        } else {
+            msg.className = 'text-danger';
+            msg.textContent = data.message;
+        }
+    });
+}
+
+function changeAvatar(avatar) {
+    fetch('/profile/change-avatar/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ avatar: avatar })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+</script>
+{% endblock %}

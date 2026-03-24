@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Smart Quiz - Adaptive Learning{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Smart Quiz Header -->
+            <div class="card border-success mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-brain me-2"></i>
+                        🧠 Smart Quiz - Adaptive Learning
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="text-success fw-bold">{{ total_correct }}</div>
+                            <small class="text-muted">Correct</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-danger fw-bold">{{ total_wrong }}</div>
+                            <small class="text-muted">Wrong</small>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-primary fw-bold">{{ overall_accuracy }}%</div>
+                            <small class="text-muted">Accuracy</small>
+                        </div>
+                    </div>
+                    {% if weak_count > 0 %}
+                    <div class="alert alert-warning mt-2 mb-0 py-2">
+                        <small><i class="fas fa-exclamation-triangle"></i> 
+                        You have {{ weak_count }} weak word(s) to practice!</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Progress -->
+            <div class="mb-3">
+                <div class="d-flex justify-content-between">
+                    <span>Question {{ question_num }}</span>
+                    <span>Score: {{ score }}</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-info" style="width: {{ progress }}%"></div>
+                </div>
+            </div>
+            
+            <!-- Question Card -->
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        Fill in the Past Simple form
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Verb Display -->
+                    <div class="text-center mb-4">
+                        <h3 class="text-primary">
+                            Base Form: <strong>{{ verb.base_form }}</strong>
+                        </h3>
+                        <p class="text-muted">{{ verb.pronunciation }}</p>
+                        <p class="text-info">{{ verb.translation }}</p>
+                    </div>
+                    
+                    <!-- Answer Form -->
+                    <form method="POST" action="{% url 'smart_quiz' %}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fs-5">What is the Past Simple form?</label>
+                            <input type="text" name="answer" class="form-control form-control-lg" 
+                                   placeholder="Enter past simple form" required autofocus>
+                        </div>
+                        
+                        <!-- Feedback -->
+                        {% if feedback %}
+                        <div class="alert alert-{{ feedback.type }} mt-3">
+                            <h5>{{ feedback.message }}</h5>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            {% if show_answer %}
+                            <button type="submit" name="next" class="btn btn-success btn-lg flex-grow-1">
+                                <i class="fas fa-arrow-right"></i> Next Word
+                            </button>
+                            {% else %}
+                            <button type="submit" class="btn btn-primary btn-lg flex-grow-1">
+                                <i class="fas fa-check"></i> Check Answer
+                            </button>
+                            {% endif %}
+                            <a href="{% url 'quiz' %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times"></i> Quit
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Learning Tip -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    <i class="fas fa-lightbulb text-warning"></i>
+                    Smart Quiz learns your weak words and shows them more often!
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

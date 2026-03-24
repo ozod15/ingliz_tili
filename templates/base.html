@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}English Verbs Learning{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Mobile App Style */
+        body {
+            padding-bottom: 80px;
+        }
+        .main-content {
+            min-height: calc(100vh - 140px);
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 0.5rem 0;
+            display: none;
+        }
+        
+        @media (max-width: 991px) {
+            .bottom-nav {
+                display: flex;
+                justify-content: space-around;
+            }
+            .navbar-collapse {
+                display: none !important;
+            }
+        }
+        
+        .bottom-nav a {
+            text-decoration: none;
+            color: #6c757d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+        }
+        
+        .bottom-nav a.active,
+        .bottom-nav a:hover {
+            color: #0d6efd;
+        }
+        
+        .bottom-nav i {
+            font-size: 1.25rem;
+            margin-bottom: 2px;
+        }
+        
+        /* Donation Button */
+        .donation-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            z-index: 999;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-graduation-cap me-2"></i>English Verbs
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'quiz' %}">Quiz</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'verbs_list' %}">Verbs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'leaderboard' %}">🏆 Leaderboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'leaderboard' %}">🏆 Leaderboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
+            <i class="fas fa-home"></i>Home
+        </a>
+        <a href="{% url 'quiz' %}" class="{% if '/quiz' in request.path %}active{% endif %}">
+            <i class="fas fa-play"></i>Quiz
+        </a>
+        <a href="{% url 'leaderboard' %}" class="{% if '/leaderboard' in request.path %}active{% endif %}">
+            <i class="fas fa-trophy"></i>Rank
+        </a>
+        <a href="{% url 'profile' %}" class="{% if '/profile' in request.path %}active{% endif %}">
+            <i class="fas fa-user"></i>Profile
+        </a>
+    </nav>
+
+    <!-- Optional Donation Button -->
+    <a href="#" class="btn btn-danger donation-btn" data-bs-toggle="modal" data-bs-target="donationModal">
+        <i class="fas fa-heart me-1"></i>Support ❤️
+    </a>
+
+    <!-- Donation Modal -->
+    <div class="modal fade" id="donationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Support the Project ❤️</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>This app is <strong>100% FREE</strong> for everyone!</p>
+                    <p>All features, quizzes, and learning content are available at no cost.</p>
+                    <hr>
+                    <p class="text-muted small">If you'd like to support the development, you can donate any amount. This is completely optional and never required.</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" disabled>
+                            <i class="fas fa-coffee me-1"></i>Buy me a coffee (Coming soon)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center py-3">
+        <div class="container">
+            <p class="mb-0">&copy; 2024 English Verbs Learning - 100% Free</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
